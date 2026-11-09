@@ -1,0 +1,19 @@
+VERSION = "not-a-version"
+SIGNING_KEY = "not-a-key"
+WEB_AUTH_ENDPOINT = "http://example.org/auth"
+
+[[CURRENCIES]]
+code = "TOO-LONG-CODE-123"
+display_decimals = 9
+status = "unknown"
+image = "not-a-url"
+
+[DOCUMENTATION]
+ORG_URL = "http://example.org"
+ORG_SUPPORT_EMAIL = "not-an-email"
+
+[[PRINCIPALS]]
+name = "Only name"
+
+[[VALIDATORS]]
+PUBLIC_KEY = "bad"

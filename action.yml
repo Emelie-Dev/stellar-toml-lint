@@ -1,0 +1,46 @@
+name: Stellar TOML Lint
+description: Validate a Stellar stellar.toml file and annotate GitHub Actions logs
+inputs:
+  domain:
+    description: Domain to fetch stellar.toml from
+    required: false
+  file:
+    description: Local stellar.toml file path
+    required: false
+  timeout:
+    description: Fetch timeout in milliseconds
+    required: false
+    default: "10000"
+runs:
+  using: composite
+  steps:
+    - name: Validate inputs
+      shell: bash
+      env:
+        INPUT_DOMAIN: ${{ inputs.domain }}
+        INPUT_FILE: ${{ inputs.file }}
+      run: |
+        if [[ -z "$INPUT_DOMAIN" && -z "$INPUT_FILE" ]] || [[ -n "$INPUT_DOMAIN" && -n "$INPUT_FILE" ]]; then
+          echo "Provide exactly one of domain or file." >&2
+          exit 2
+        fi
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+    - name: Install stellar-toml-lint
+      shell: bash
+      run: npm install --global stellar-toml-lint@latest
+    - name: Lint remote file
+      if: inputs.domain != ''
+      shell: bash
+      env:
+        INPUT_DOMAIN: ${{ inputs.domain }}
+        INPUT_TIMEOUT: ${{ inputs.timeout }}
+      run: stellar-toml-lint "$INPUT_DOMAIN" --timeout "$INPUT_TIMEOUT" --format github
+    - name: Lint local file
+      if: inputs.file != ''
+      shell: bash
+      env:
+        INPUT_FILE: ${{ inputs.file }}
+      run: stellar-toml-lint --file "$INPUT_FILE" --format github

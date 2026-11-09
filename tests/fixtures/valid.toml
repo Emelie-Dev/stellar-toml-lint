@@ -1,0 +1,25 @@
+VERSION = "2.0.0"
+NETWORK_PASSPHRASE = "Public Global Stellar Network ; September 2015"
+SIGNING_KEY = "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF"
+ACCOUNTS = ["GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF"]
+WEB_AUTH_ENDPOINT = "https://example.org/auth"
+
+[[CURRENCIES]]
+code = "XLM"
+name = "Stellar Lumens"
+desc = "The native asset"
+display_decimals = 7
+status = "live"
+
+[DOCUMENTATION]
+ORG_NAME = "Example Org"
+ORG_URL = "https://example.org"
+ORG_LOGO = "https://example.org/logo.png"
+ORG_SUPPORT_EMAIL = "help@example.org"
+
+[[PRINCIPALS]]
+name = "Example"
+email = "help@example.org"
+
+[[VALIDATORS]]
+PUBLIC_KEY = "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF"

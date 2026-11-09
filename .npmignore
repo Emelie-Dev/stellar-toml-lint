@@ -1,0 +1,9 @@
+src/
+bin/
+tests/
+.github/
+*.config.*
+tsconfig.json
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
