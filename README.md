@@ -23,9 +23,13 @@ npx stellar-toml-lint example.org --format github
 npx stellar-toml-lint --file ./stellar.toml --json
 npx stellar-toml-lint --file ./stellar.toml --ignore CORS_MISSING,ORG_NAME_MISSING
 npx stellar-toml-lint example.org --strict --timeout 15000
+npx stellar-toml-lint --help
+npx stellar-toml-lint --version
 ```
 
 Text output groups findings by severity. ANSI colors are used only for TTY output and are disabled by `NO_COLOR`. `--json` is an alias for `--format json`; GitHub annotations are produced with `--format github`.
+
+`--help` (or `-h`) prints the supported options, and `--version` prints the installed package version. Both exit successfully without reading a file or fetching a domain.
 
 Exit codes:
 
