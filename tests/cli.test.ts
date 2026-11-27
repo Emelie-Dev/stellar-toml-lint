@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -63,5 +64,28 @@ describe("CLI", () => {
   it("returns usage code 2 for invalid arguments", () => {
     expect(run("--unknown").status).toBe(2);
     expect(run().status).toBe(2);
+  });
+
+  it("prints help for short and long options without reading input", () => {
+    for (const flag of ["--help", "-h"]) {
+      for (const args of [[flag], [flag, "--file", "does-not-exist.toml"]]) {
+        const result = run(...args);
+        expect(result.status).toBe(0);
+        expect(result.stdout).toContain("Usage: stellar-toml-lint");
+        expect(result.stdout).toContain("--help");
+        expect(result.stdout).toContain("--version");
+        expect(result.stderr).toBe("");
+      }
+    }
+  });
+
+  it("prints the maintained package version without fetching a domain", () => {
+    const version = JSON.parse(readFileSync("package.json", "utf8")).version;
+    for (const args of [["--version"], ["--version", "example.invalid"]]) {
+      const result = run(...args);
+      expect(result.status).toBe(0);
+      expect(result.stdout.trim()).toBe(version);
+      expect(result.stderr).toBe("");
+    }
   });
 });

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from "node:fs/promises";
 import { isatty } from "node:tty";
+import packageJson from "../package.json";
 import { lintDomain, lintToml } from "../src/index.js";
 import type { LintIssue, LintResult, Severity } from "../src/types.js";
 
@@ -11,12 +12,16 @@ interface CliOptions {
   ignore: Set<string>;
   strict: boolean;
   timeoutMs?: number;
+  help: boolean;
+  version: boolean;
 }
 
 const usage = `Usage: stellar-toml-lint <domain>
        stellar-toml-lint --file <path>
 
 Options:
+  -h, --help                Show this help and exit
+  --version                 Show the installed version and exit
   --json                    Machine-readable JSON output
   --format <text|json|github>
   --ignore <ruleId,...>     Ignore listed rule IDs
@@ -28,11 +33,15 @@ function parseArgs(args: string[]): CliOptions {
     format: "text",
     ignore: new Set(),
     strict: false,
+    help: false,
+    version: false,
   };
   const positional: string[] = [];
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
-    if (arg === "--json") options.format = "json";
+    if (arg === "--help" || arg === "-h") options.help = true;
+    else if (arg === "--version") options.version = true;
+    else if (arg === "--json") options.format = "json";
     else if (arg === "--strict") options.strict = true;
     else if (
       arg === "--file" ||
@@ -69,7 +78,12 @@ function parseArgs(args: string[]): CliOptions {
     throw new Error("Provide either a domain or --file, not both.");
   if (options.file && !args.includes("--file"))
     throw new Error("--file requires a path.");
-  if (!options.file && positional.length !== 1)
+  if (
+    !options.help &&
+    !options.version &&
+    !options.file &&
+    positional.length !== 1
+  )
     throw new Error("Provide exactly one domain or --file path.");
   if (options.file && options.timeoutMs !== undefined)
     throw new Error("--timeout is only valid when fetching a domain.");
@@ -134,6 +148,14 @@ function outputGithub(issues: LintIssue[]): void {
 async function main(): Promise<void> {
   try {
     const options = parseArgs(process.argv.slice(2));
+    if (options.help) {
+      console.log(usage);
+      return;
+    }
+    if (options.version) {
+      console.log(packageJson.version);
+      return;
+    }
     let result: LintResult;
     if (options.file) {
       const raw = await readFile(options.file, "utf8");
